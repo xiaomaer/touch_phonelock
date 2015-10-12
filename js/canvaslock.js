@@ -51,13 +51,6 @@ var openlock = (function() {
 		}
 
 	}
-
-	function istouchstart(event) {
-			var targets = event.touches;
-			if (targets.length === 1) {
-				isPointselect(targets[0]);
-			}
-		}
 		//判断手指是否在圆圈上
 
 	function isPointselect(target) {
@@ -84,9 +77,15 @@ var openlock = (function() {
 
 		}
 	}
+	//触摸
+	function istouchstart(event) {
+			var targets = event.touches;
+			if (targets.length === 1) {
+				isPointselect(targets[0]);
+			}
+		}
 
-
-///questions:不知道如何实现“直线跟着手指移动”？
+///questions:不知道如何实现“直线跟着手指移动”？（可以每次清除画布和初始化画布来实现，但是觉得好麻烦，不知道有没有更好的方法）
 	function istouchmove(event) {
 		event.preventDefault(); //阻止默认行为滚动
 		var touches = event.targetTouches;
