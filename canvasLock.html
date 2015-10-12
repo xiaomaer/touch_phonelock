@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+		<title>js通过canvas标签实现手机九点解锁（me）：touch事件实现解锁</title>
+		<style>
+			* {
+				padding: 0px;
+				margin: 0px;
+			}
+			html,body{
+				width: 100%;
+				height: 100%;
+				background-color: #4682B4;
+			}
+			#canvas{
+				/*注意：这里一定要设置display:block,否则页面会出现滚动条，
+				 * 该属性的目的是为了在调整浏览器窗口的时候页面不出现滚动条，在利用画布进行游戏开发的场合很常用。*/
+				display: block;
+			}
+		</style>
+	</head>
+
+	<body>
+		<canvas id="canvas"></canvas>
+		<script type="text/javascript" src="js/canvaslock.js"></script>
+	</body>
+
+</html>
