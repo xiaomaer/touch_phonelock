@@ -108,10 +108,21 @@ var openlock = (function() {
 		}
 	}
 
+ //显示密码，并且1s后清空画布，即绘制线消失
 	function istouchend() {
 		alert("密码是：" + touchPoints.join(""));
-		touchPoints = [];
+		setTimeout(clearcanvas,1000);
 
+	}
+	//清空画布，并重新绘制九宫格
+	function clearcanvas(){
+		var cwidth = doc.body.offsetWidth,
+			cheight = doc.body.offsetHeight,
+			ctx = canvas.getContext("2d");
+		ctx.clearRect(0, 0,cwidth,cheight);
+		touchPoints = [];
+		openlock.initCanvas();
+	}
 	}
 	return {
 		setCanvas: setCanvasSize,
