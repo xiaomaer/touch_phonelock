@@ -1,4 +1,3 @@
-//计算九个圆的圆心
 var openlock = (function() {
 	var doc = document,
 		radius = 25,
@@ -7,6 +6,7 @@ var openlock = (function() {
 		canvas = doc.getElementById("canvas"),
 		touchPoints = [],
 		ninepoints = [];
+		ctx = canvas.getContext("2d");
 	//设置画布的宽高，并计算圆之间的距离
 	function setCanvasSize() {
 			var bodywidth = window.innerWidth || doc.body.clientWidth || doc.documentElement.clientWidth,
@@ -38,19 +38,18 @@ var openlock = (function() {
 
 	//初始化画布，即绘制九个圆
 	function initCavans() {
-		ninepoints = circleCenters();
-		var len = ninepoints.length,
-			ctx = canvas.getContext("2d");
+			ninepoints = circleCenters();
+			var len = ninepoints.length;
 
-		ctx.strokeStyle = "white";
-		ctx.lineWidth = borderwidth;
-		for (var i = 0; i < len; i++) {
-			ctx.beginPath();
-			ctx.arc(ninepoints[i].x, ninepoints[i].y, radius, 0, Math.PI * 2, false);
-			ctx.stroke();
+			ctx.strokeStyle = "white";
+			ctx.lineWidth = borderwidth;
+			for (var i = 0; i < len; i++) {
+				ctx.beginPath();
+				ctx.arc(ninepoints[i].x, ninepoints[i].y, radius, 0, Math.PI * 2, false);
+				ctx.stroke();
+			}
+
 		}
-
-	}
 		//判断手指是否在圆圈上
 
 	function isPointselect(target) {
@@ -66,7 +65,6 @@ var openlock = (function() {
 				if (touchPoints.indexOf(i) === -1) //值i是否存在于数组中，不存在返回-1，存在的话返回在数组中的位置
 				{ //不存在于数组中，就保存
 					touchPoints.push(i);
-					var ctx = canvas.getContext("2d");
 					ctx.beginPath();
 					ctx.fillStyle = "white";
 					ctx.arc(ninepoints[i].x, ninepoints[i].y, 8, 0, 2 * Math.PI, false);
@@ -77,51 +75,55 @@ var openlock = (function() {
 
 		}
 	}
-	//触摸
+
 	function istouchstart(event) {
-			var targets = event.touches;
-			if (targets.length === 1) {
-				isPointselect(targets[0]);
-			}
+		var targets = event.touches;
+		if (targets.length === 1) {
+			isPointselect(targets[0]);
 		}
+	}
 
-///questions:不知道如何实现“直线跟着手指移动”？（可以每次清除画布和初始化画布来实现，但是觉得好麻烦，不知道有没有更好的方法）
+
+	///questions:不知道如何实现“直线跟着手指移动”？（可以每次清除画布和初始化画布来实现，但是觉得好麻烦，不知道有没有更好的方法）
 	function istouchmove(event) {
-		event.preventDefault(); //阻止默认行为滚动
-		var touches = event.targetTouches;
-		if (touches.length == 1) {
-			isPointselect(touches[0]);
-			if (touchPoints.length > 1) {
-				var maxlen = touchPoints.length - 1,
-					beforecurr = touchPoints[maxlen - 1],
-					currlen = touchPoints[maxlen],
-					ctx = canvas.getContext("2d");
-				ctx.beginPath();
-				ctx.lineWidth = 6;
-				ctx.strokeStyle = "white";
-				ctx.moveTo(ninepoints[beforecurr].x, ninepoints[beforecurr].y);
-				ctx.lineTo(ninepoints[currlen].x, ninepoints[currlen].y);
-				ctx.stroke();
-				ctx.closePath();
+			event.preventDefault(); //阻止默认行为滚动
+			var touches = event.targetTouches;
+			if (touches.length == 1) {
+				var oldpoints = touchPoints.slice(0),
+					oldlen = oldpoints.length,
+					maxlen;
+				isPointselect(touches[0]);
+				newlen = touchPoints.length;
+				if (newlen > oldlen) {
+					var maxlen = newlen- 1,
+						beforecurr = touchPoints[maxlen - 1],
+						currlen = touchPoints[maxlen];
+				   //绘制直线
+					ctx.beginPath();
+					ctx.lineWidth = 6;
+					ctx.strokeStyle = "white";
+					ctx.moveTo(ninepoints[beforecurr].x, ninepoints[beforecurr].y);
+					ctx.lineTo(ninepoints[currlen].x, ninepoints[currlen].y);
+					ctx.stroke();
+					ctx.closePath();
+				}
 			}
 		}
-	}
+		//显示密码，并且1s后清空画布，即绘制线消失
 
- //显示密码，并且1s后清空画布，即绘制线消失
 	function istouchend() {
-		alert("密码是：" + touchPoints.join(""));
-		setTimeout(clearcanvas,1000);
+			alert("密码是：" + touchPoints.join(""));
+			setTimeout(clearcanvas, 1000);
 
-	}
-	//清空画布，并重新绘制九宫格
-	function clearcanvas(){
+		}
+		//清空画布，并重新绘制九宫格
+
+	function clearcanvas() {
 		var cwidth = doc.body.offsetWidth,
-			cheight = doc.body.offsetHeight,
-			ctx = canvas.getContext("2d");
-		ctx.clearRect(0, 0,cwidth,cheight);
+			cheight = doc.body.offsetHeight;
+		ctx.clearRect(0, 0, cwidth, cheight);
 		touchPoints = [];
 		openlock.initCanvas();
-	}
 	}
 	return {
 		setCanvas: setCanvasSize,
